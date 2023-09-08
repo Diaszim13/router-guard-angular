@@ -1,0 +1,18 @@
+import { CanActivateFn, Router } from '@angular/router';
+import {inject} from '@angular/core'
+import { Role } from './role';
+import { AuthService } from './auth.service';
+
+export const hasRoleGuard: CanActivateFn = (route, state) => {
+
+  const router: Router = inject(Router);
+  const userRole: Role = inject(AuthService).getUserRole();
+
+  const expectedRoles: Role[] = route.data['roles'];
+  
+  const hasRole: boolean = expectedRoles.some((role) => userRole === role);
+  console.log(hasRole);
+
+  //Vai retornar a role do usuario ou a rota de acesso negado
+  return hasRole || router.parseUrl('/unauthorized');
+};
